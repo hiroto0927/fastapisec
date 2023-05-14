@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,APIRouter
 from fastapi.responses import RedirectResponse
+from src.db.database import get_db
+from src.routers import user
 
 app = FastAPI()
 
@@ -10,3 +12,5 @@ async def redirect_docs():
 @app.get("/hello")
 async def root():
     return {"message": "Hello World"}
+
+app.include_router(user.router)
