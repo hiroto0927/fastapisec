@@ -16,7 +16,7 @@ def create_user(user:Create,db:Session):
     rand = hashed.randomstr(10)
     hash = hashed.get_password_hashed(user.password,rand)
 
-    query = User(name=user.name, salt = rand, hashedpass = hash)
+    query = User(name=user.name, salt = rand, hashedpass = hash, email = user.email)
     db.add(query)
     db.commit()
 
