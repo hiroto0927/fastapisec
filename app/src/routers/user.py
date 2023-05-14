@@ -7,7 +7,7 @@ from src.utils.exeption import NotFoundException
 from src.schemas.user import Read,Create
 from fastapi import HTTPException
 
-router = APIRouter(prefix="/users",tags=["users"])
+router = APIRouter(prefix="/api/users",tags=["users"])
 
 @router.get("/{id}",response_model=Read)
 def get_one_user(id:int,db:Session = Depends(get_db)):
