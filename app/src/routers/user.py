@@ -6,11 +6,14 @@ from src.db.database import get_db
 from src.utils.exeption import NotFoundException
 from src.schemas.user import Read,Create
 from fastapi import HTTPException
+from src.libs import token
+from src.models.user import User
+from src.libs import token
 
 router = APIRouter(prefix="/api/users",tags=["users"])
 
 @router.get("/{id}",response_model=Read)
-def get_one_user(id:int,db:Session = Depends(get_db)):
+def get_one_user(id:int,db:Session = Depends(get_db),_ = Depends(token.get_cuurent_user)):
 
     try:
         return users.get_one_member(id,db)
