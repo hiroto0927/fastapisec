@@ -17,3 +17,9 @@ class AuthUser(Create):
 
     class Config:
         orm_mode = True
+
+class PublicKey(BaseModel):
+    public_key: str
+
+    class Config:
+        orm_mode = True

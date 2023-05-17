@@ -5,7 +5,7 @@ from src.schemas.auth import Create
 from fastapi import HTTPException
 from src.models.user import User
 from src.libs import hashed,token
-from src.schemas.auth import Read
+from src.schemas.auth import Read,PublicKey
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
@@ -13,10 +13,11 @@ from datetime import datetime
 
 load_dotenv()
 ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
+PUBLIC_KEY = os.environ.get("PUBLIC_KEY")
 
-router = APIRouter(prefix="/api/token",tags=["auth"])
+router = APIRouter(prefix="/api/auth",tags=["auth"])
 
-@router.post("",response_model=Read)
+@router.post("/token",response_model=Read)
 def create_user(req:Create,db:Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
 
@@ -33,4 +34,8 @@ def create_user(req:Create,db:Session = Depends(get_db)):
               }
     )
 
-    return {"access_token": access_token,"token_type": "bearer"}
+    return { "access_token" : access_token, "token_type" : "bearer"}
+
+@router.get("/public-key",response_model=PublicKey)
+def publish_public_key():
+    return { "public_key" : PUBLIC_KEY }
