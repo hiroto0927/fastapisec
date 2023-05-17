@@ -69,9 +69,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            url=url,
-            connection=connection, 
-            target_metadata=target_metadata
+            url=url, connection=connection, target_metadata=target_metadata
         )
 
         with context.begin_transaction():
