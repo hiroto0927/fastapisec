@@ -1,14 +1,9 @@
-from datetime import datetime, timedelta
-from fastapi import Depends,Response
-from typing import Union
+from fastapi import Depends
 from jose import JWTError, jwt
 from dotenv import load_dotenv
 import os
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
-from src.models.user import User
 from fastapi.security import HTTPBearer,HTTPAuthorizationCredentials
-from src.schemas.auth import AuthUser
 from jose.exceptions import ExpiredSignatureError
 
 load_dotenv()

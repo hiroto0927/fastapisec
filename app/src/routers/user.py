@@ -1,13 +1,11 @@
 from fastapi import APIRouter,Depends
 from sqlalchemy.orm import Session
 from src.cruds import users
-from typing import List
 from src.db.database import get_db
 from src.utils.exeption import NotFoundException
 from src.schemas.user import Read,Create
 from fastapi import HTTPException
 from src.libs import token
-from src.models.user import User
 from src.libs import token
 
 router = APIRouter(prefix="/api/users",tags=["users"])
