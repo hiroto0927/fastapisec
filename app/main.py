@@ -1,7 +1,6 @@
-from fastapi import FastAPI,APIRouter
+from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from src.db.database import get_db
-from src.routers import user
+from src.routers import user,auth
 
 app = FastAPI()
 
@@ -9,8 +8,5 @@ app = FastAPI()
 async def redirect_docs():
     return RedirectResponse("/docs")
 
-@app.get("/hello")
-async def root():
-    return {"message": "Hello World"}
-
 app.include_router(user.router)
+app.include_router(auth.router)
