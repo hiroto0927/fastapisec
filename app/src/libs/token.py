@@ -23,7 +23,7 @@ def create_access_token(data: dict):
 
 def decode_access_token(encoded_jwt: str):
     try:
-        decoded_token = jwt.decode(encoded_jwt, PRIVATE_KEY, algorithms=ALGORITHM)
+        decoded_token = jwt.decode(encoded_jwt, PUBLIC_KEY, algorithms=ALGORITHM)
         return decoded_token
     except ExpiredSignatureError:
         raise HTTPException(401, "ExpiredSignatureError")

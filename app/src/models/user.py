@@ -10,6 +10,3 @@ class User(Base):
     email = Column("email", String, nullable=False, unique=True)
     salt = Column("salt", String, nullable=False)
     hashedpass = Column("hashedpass", String, nullable=False)
-
-    class Config:
-        orm_mode = True
