@@ -2,3 +2,6 @@
 .env
 __pycache__
 .vscode
+private-key.pem
+public-key.pem
+venv
