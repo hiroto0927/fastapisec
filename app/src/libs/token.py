@@ -21,10 +21,28 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 
+def create_refresh_token(data: dict):
+    to_encode = data.copy()
+
+    encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
+
+    return encoded_jwt
+
+
 def decode_access_token(encoded_jwt: str):
     try:
         decoded_token = jwt.decode(encoded_jwt, PUBLIC_KEY, algorithms=ALGORITHM)
         return decoded_token
+    except ExpiredSignatureError:
+        raise HTTPException(401, "ExpiredSignatureError")
+    except JWTError:
+        raise HTTPException(401)
+
+
+def decode_refresh_token(encoded_refresh: str):
+    try:
+        decoded_refresh = jwt.decode(encoded_refresh, PUBLIC_KEY, algorithms=ALGORITHM)
+        return decoded_refresh
     except ExpiredSignatureError:
         raise HTTPException(401, "ExpiredSignatureError")
     except JWTError:

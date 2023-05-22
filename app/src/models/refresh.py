@@ -12,5 +12,4 @@ class Refresh(Base):
         primary_key=True,
         autoincrement=True,
     )
-    salt = Column("salt", String, nullable=False)
-    refresh = Column("refresh", String, nullable=False)
+    kid = Column("kid", String, nullable=False)
