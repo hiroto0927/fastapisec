@@ -40,30 +40,7 @@ def create_user(req: Create, db: Session = Depends(get_db)):
         }
     )
 
-    kid: str = hashed.randomstr(10)
-
-    refresh = db.query(Refresh).filter(Refresh.id == user.id)
-
-    if refresh.first() is None:
-        token_data = Refresh()
-        token_data.id = user.id
-        token_data.kid = kid
-        db.add(token_data)
-        db.commit()
-    else:
-        refresh.update({"kid": kid})
-        db.commit()
-
-    print(f"kid:{kid}")
-
-    refresh_token = token.create_refresh_token(
-        data={
-            "sub": user.id,
-            "kid": kid,
-            "iat": datetime.utcnow(),
-            "exp": datetime.utcnow() + timedelta(minutes=30),
-        }
-    )
+    refresh_token = refresh.create_refresh_token(user.id, db)
 
     return {"access_token": access_token, "refresh_token": refresh_token}
 
@@ -80,12 +57,24 @@ def refresh_publish(req: RefreshSchema, db: Session = Depends(get_db)):
     if int(datetime.utcnow().timestamp()) > decoded.exp:
         raise HTTPException(401, "JWT is already expired.")
 
-    exist_refresh = db.query(Refresh).filter(Refresh.id == decoded.sub)
+    valid_refresh = db.query(Refresh).filter(Refresh.id == decoded.sub)
 
-    if exist_refresh.first() is None:
+    if valid_refresh.first() is None:
         raise HTTPException(401, "Invalid credentials")
 
-    if exist_refresh.filter(Refresh.kid == decoded.kid).first() is None:
+    if valid_refresh.filter(Refresh.kid == decoded.kid).first() is None:
         raise HTTPException(401, "Invalid credentials")
 
-    return decoded
+    user = db.query(User).filter(User.id == decoded.sub).first()
+
+    access_token = token.create_access_token(
+        data={
+            "sub": user.email,
+            "iat": datetime.utcnow(),
+            "exp": datetime.utcnow() + timedelta(minutes=30),
+        }
+    )
+
+    refresh_token = refresh.create_refresh_token(user.id, db)
+
+    return {"access_token": access_token, "refresh_token": refresh_token}
