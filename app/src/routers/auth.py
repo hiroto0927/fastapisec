@@ -16,6 +16,7 @@ from src.libs import refresh
 
 load_dotenv()
 
+
 ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
 PUBLIC_KEY = os.environ.get("PUBLIC_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
