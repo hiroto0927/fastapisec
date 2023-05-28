@@ -6,21 +6,25 @@ from fastapi import HTTPException
 from src.models.user import User
 from src.models.refresh import Refresh
 from src.libs import hashed, token
-from src.schemas.auth import Read, PublicKey, Refresh as RefreshSchema, RefreshDecoded
+from src.schemas.auth import PublicKey, Refresh as RefreshSchema, RefreshDecoded
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
 from datetime import datetime
 from src.libs import refresh
 
+
 load_dotenv()
 
 ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
 PUBLIC_KEY = os.environ.get("PUBLIC_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
+kty = os.environ.get("kty")
+n = os.environ.get("n")
+e = os.environ.get("e")
+
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-
 
 @router.post("/token")
 def create_user(req: Create, db: Session = Depends(get_db)):
@@ -47,8 +51,7 @@ def create_user(req: Create, db: Session = Depends(get_db)):
 
 @router.get("/public-key", response_model=PublicKey)
 def publish_public_key():
-    return {"public_key": PUBLIC_KEY}
-
+    return { "kty": kty, "n" : n, "e":e }
 
 @router.post("/refresh-token")
 def refresh_publish(req: RefreshSchema, db: Session = Depends(get_db)):

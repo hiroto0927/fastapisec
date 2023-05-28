@@ -1,7 +1,5 @@
 import jwt
 import os
-from fastapi import Depends
-from src.db.database import get_db
 from dotenv import load_dotenv
 from src.schemas.auth import RefreshDecoded
 from sqlalchemy.orm import Session
@@ -20,7 +18,7 @@ ALGORITHM = os.environ.get("ALGORITHM")
 def encode_jwt(data: dict):
     to_encode = data.copy()
 
-    encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.decode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
 
