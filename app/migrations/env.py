@@ -6,10 +6,24 @@ from sqlalchemy import pool
 from alembic import context
 from src.db.database import Base
 from src.models.user import User
+from src.models.refresh import Refresh
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+HOST = os.environ.get("HOST")
+USERS = os.environ.get("USERS")
+PASS = os.environ.get("PASS")
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+
+DATABASE_URL = "postgresql://{}:{}@{}/{}".format(USERS, PASS, HOST, POSTGRES_DB)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -69,9 +83,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            url=url,
-            connection=connection, 
-            target_metadata=target_metadata
+            url=url, connection=connection, target_metadata=target_metadata
         )
 
         with context.begin_transaction():
