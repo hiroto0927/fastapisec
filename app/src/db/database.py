@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from dotenv import load_dotenv
 
@@ -13,8 +12,8 @@ POSTGRES_DB = os.environ.get("POSTGRES_DB")
 
 DATABASE_URL = "postgresql://{}:{}@{}/{}".format(USERS, PASS, HOST, POSTGRES_DB)
 
-
 engine = create_engine(DATABASE_URL)
+
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
