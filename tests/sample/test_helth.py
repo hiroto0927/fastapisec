@@ -4,8 +4,8 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_read_main():
-    response = client.get("/hello")
+def test_helth_check():
+    response = client.get("/health-check")
 
     assert response.status_code == 200
     assert response.json() == {"msg": "hello"}
