@@ -12,3 +12,12 @@ services:
       POSTGRES_PASSWORD: root
     volumes:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+  db_test:
+    build:
+      context: .
+      dockerfile: ./db/Dockerfile
+    ports:
+      - 5430:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
