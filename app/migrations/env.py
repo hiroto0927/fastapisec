@@ -5,8 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from src.db.database import Base
-from src.models.user import User
-from src.models.refresh import Refresh
+from src.models import *
 import os
 from dotenv import load_dotenv
 
@@ -82,9 +81,7 @@ def run_migrations_online() -> None:
     url = config.get_main_option("sqlalchemy.url")
 
     with connectable.connect() as connection:
-        context.configure(
-            url=url, connection=connection, target_metadata=target_metadata
-        )
+        context.configure(url=url, connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

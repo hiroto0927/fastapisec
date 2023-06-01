@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from src.models.user import User
-from src.utils.exeption import NotFoundException
+from src.utils.exeption import NotFoundException, AlreadyExistUserError
 from src.schemas.user import Create
-from src.libs import hashed
+from src.libs import pwd
 
 
 def get_one_member(id: int, db: Session):
@@ -13,11 +13,15 @@ def get_one_member(id: int, db: Session):
 
 
 def create_user(user: Create, db: Session):
-    rand = hashed.randomstr(10)
-    hash = hashed.get_password_hashed(user.password, rand)
+    rand = pwd.randomstr(10)
+    hash = pwd.get_password_hashed(user.password, rand)
 
-    query = User(name=user.name, salt=rand, hashedpass=hash, email=user.email)
-    db.add(query)
+    exist_user = db.query(User).filter(User.email == user.email).first()
+    if exist_user is not None:
+        raise AlreadyExistUserError()
+
+    new_user = User(name=user.name, salt=rand, hashedpass=hash, email=user.email)
+    db.add(new_user)
     db.commit()
 
-    return query
+    return new_user
