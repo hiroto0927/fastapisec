@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
 from src.routers import *
-from src.routers.hello import router
+from src.routers.health_check import router
 
 app = FastAPI()
 
@@ -10,11 +10,6 @@ app = FastAPI()
 @app.get("/")
 async def redirect_docs():
     return RedirectResponse("/docs")
-
-
-# @app.get("/hello")
-# def hello():
-#     return {"msg": "hello"}
 
 
 app.include_router(router)

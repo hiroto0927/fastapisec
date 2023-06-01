@@ -5,13 +5,11 @@ from src.schemas.auth import Create
 from fastapi import HTTPException
 from src.models.user import User
 from src.models.refresh import Refresh
-from src.libs import hashed, token
-from src.schemas.auth import PublicKey, Refresh as RefreshSchema, RefreshDecoded
-from datetime import timedelta
+from src.schemas.jwt import PublicKey, Refresh as RefreshSchema, Token
 from dotenv import load_dotenv
 import os
 from datetime import datetime
-from src.libs import refresh
+from src.libs import pwd, jwt
 
 
 load_dotenv()
@@ -27,36 +25,32 @@ e = os.environ.get("e")
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
-@router.post("/token")
+
+@router.post("/token", response_model=Token)
 def create_user(req: Create, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
 
     if user is None:
         raise HTTPException(404, "user is not found")
 
-    if hashed.check_password(user.salt + req.password, user.hashedpass) == False:
+    if pwd.check_password(user.salt + req.password, user.hashedpass) == False:
         raise HTTPException(401, "Invalid credentials")
 
-    access_token = token.create_access_token(
-        data={
-            "sub": user.email,
-            "iat": datetime.utcnow(),
-            "exp": datetime.utcnow() + timedelta(minutes=30),
-        }
-    )
+    access_token = jwt.create_access_token(user.email)
 
-    refresh_token = refresh.create_refresh_token(user.id, db)
+    refresh_token = jwt.create_refresh_token(user.id, db)
 
     return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 @router.get("/public-key", response_model=PublicKey)
 def publish_public_key():
-    return { "kty": kty, "n" : n, "e":e }
+    return {"kty": kty, "n": n, "e": e}
 
-@router.post("/refresh-token")
+
+@router.post("/refresh-token", response_model=Token)
 def refresh_publish(req: RefreshSchema, db: Session = Depends(get_db)):
-    decoded = refresh.decoded_refresh_token(req.refresh_token)
+    decoded = jwt.decoded_refresh_token(req.refresh_token)
 
     if int(datetime.utcnow().timestamp()) > decoded.exp:
         raise HTTPException(401, "JWT is already expired.")
@@ -71,14 +65,8 @@ def refresh_publish(req: RefreshSchema, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.id == decoded.sub).first()
 
-    access_token = token.create_access_token(
-        data={
-            "sub": user.email,
-            "iat": datetime.utcnow(),
-            "exp": datetime.utcnow() + timedelta(minutes=30),
-        }
-    )
+    access_token = jwt.create_access_token(user.email)
 
-    refresh_token = refresh.create_refresh_token(user.id, db)
+    refresh_token = jwt.create_refresh_token(user.id, db)
 
     return {"access_token": access_token, "refresh_token": refresh_token}
