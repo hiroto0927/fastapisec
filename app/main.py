@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-
 from src.routers import *
 from src.routers.health_check import router
+
 
 app = FastAPI()
 
