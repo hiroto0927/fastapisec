@@ -5,7 +5,7 @@ from src.schemas.auth import Create
 from fastapi import HTTPException
 from src.models.user import User
 from src.models.refresh import Refresh
-from src.schemas.jwt import PublicKey, Refresh as RefreshSchema, Token
+from src.schemas.jwt import PublicKey, Refresh as RefreshSchema, Token, DeleteRefresh
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -70,3 +70,21 @@ def refresh_publish(req: RefreshSchema, db: Session = Depends(get_db)):
     refresh_token = jwt.create_refresh_token(user.id, db)
 
     return {"access_token": access_token, "refresh_token": refresh_token}
+
+
+@router.delete("/refresh-token")
+def delete_refresh_token(req: DeleteRefresh, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == req.email).first()
+
+    if user is None:
+        raise HTTPException(401, "Not Found User")
+
+    valid_refresh = db.query(Refresh).filter(Refresh.id == user.id)
+
+    if valid_refresh.first() is None:
+        raise HTTPException(401, "Invalid credentials")
+
+    valid_refresh.delete()
+    db.commit()
+
+    return {"message": "success delete refresh token"}

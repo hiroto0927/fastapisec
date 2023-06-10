@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class RefreshDecoded(BaseModel):
@@ -30,3 +30,7 @@ class Refresh(BaseModel):
 class Token(BaseModel):
     access_token: str
     refresh_token: str
+
+
+class DeleteRefresh(BaseModel):
+    email: EmailStr
