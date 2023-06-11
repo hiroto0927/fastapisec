@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from src.schemas.jwt import PublicKey, Refresh as RefreshSchema, Token, DeleteRefresh
 import os
 from jwt import ExpiredSignatureError, InvalidTokenError
-from src.utils.exeption import NotFoundException, PasswordNotMatchError, NotUserExistException
+from src.utils.exeption import PasswordNotMatchError, NotUserExistException
 from src.cruds import auth
 from dotenv import load_dotenv
 

@@ -3,7 +3,7 @@ from src.models.user import User
 from src.libs import jwt, pwd
 from src.schemas.auth import Create
 from src.schemas.jwt import Refresh as RefreshSchema
-from src.utils.exeption import NotFoundException, PasswordNotMatchError, NotUserExistException
+from src.utils.exeption import PasswordNotMatchError, NotUserExistException
 from datetime import datetime
 from src.models.refresh import Refresh
 from jwt import ExpiredSignatureError, InvalidTokenError
