@@ -1,8 +1,7 @@
 from fastapi.testclient import TestClient
 from src.utils.exeption import PasswordNotMatchError, NotUserExistException
 from app.main import app
-from src.schemas.auth import Create
-from src.models.user import User
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 client = TestClient(app)
 
@@ -39,3 +38,30 @@ def test_republish_token(mocker):
     )
     response = client.post("/api/auth/refresh-token", json={"refresh_token": "refresh_token"})
     assert response.status_code == 200
+
+
+def test_republish_token_exeptions(mocker):
+    mocker.patch(
+        "src.cruds.auth.token_republish_by_refresh_token", side_effect=[ExpiredSignatureError, InvalidTokenError]
+    )
+
+    response = client.post("/api/auth/refresh-token", json={"refresh_token": "refresh_token"})
+    assert response.status_code == 401
+
+    response = client.post("/api/auth/refresh-token", json={"refresh_token": "refresh_token"})
+    assert response.status_code == 401
+
+
+def test_delete_refresh_token(mocker):
+    mocker.patch("src.cruds.auth.delete_refresh_token_by_email", return_value=None)
+    response = client.request("DELETE", "/api/auth/refresh-token", json={"email": "user@example.com"})
+    assert response.status_code == 200
+
+
+def test_delete_refresh_token_exeptions(mocker):
+    mocker.patch("src.cruds.auth.delete_refresh_token_by_email", side_effect=[NotUserExistException, InvalidTokenError])
+    response = client.request("DELETE", "/api/auth/refresh-token", json={"email": "non-user@example.com"})
+    assert response.status_code == 404
+
+    response = client.request("DELETE", "/api/auth/refresh-token", json={"email": "user@example.com"})
+    assert response.status_code == 401
