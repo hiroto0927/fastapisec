@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 from src.models.user import User
-from src.utils.exeption import NotFoundException, AlreadyExistUserError
+from src.utils.exeption import AlreadyExistUserError, NotUserExistException
 from src.schemas.user import Create
 from src.libs import pwd
 
 
 def get_one_member(id: int, db: Session):
     if db.query(User).filter(User.id == id).first() == None:
-        raise NotFoundException()
+        raise NotUserExistException()
 
     return db.query(User).filter(User.id == id).first()
 
