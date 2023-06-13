@@ -54,3 +54,24 @@ def test_get_user_exeptions(mocker):
     mocker.patch("src.cruds.users.get_one_member", side_effect=[NotUserExistException])
     response = client.get("/api/users/100")
     assert response.status_code == 404
+
+
+def test_create_user(mocker):
+    mocker.patch(
+        "src.cruds.users.create_user",
+        return_value={
+            "id": 1,
+            "name": "test_user",
+            "email": "user@example.com",
+            "salt": "salt",
+            "hashedpass": "hashedpass",
+        },
+    )
+    response = client.post("/api/users/", json={"name": "string", "password": "stringst", "email": "user@example.com"})
+    assert response.status_code == 200
+
+
+def test_create_user_exeptions(mocker):
+    mocker.patch("src.cruds.users.create_user", side_effect=[AlreadyExistUserError])
+    response = client.post("/api/users/", json={"name": "string", "password": "stringst", "email": "user@example.com"})
+    assert response.status_code == 409
