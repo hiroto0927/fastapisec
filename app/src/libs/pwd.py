@@ -22,5 +22,5 @@ def check_password(plain_password: str, hashed_password: str):
 def get_cuurent_user(credential: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     token = credential.credentials
     decoded_token = jwt.decode_access_token(token)
-
+    print(decoded_token)
     return decoded_token

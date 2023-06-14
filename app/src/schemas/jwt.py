@@ -34,3 +34,7 @@ class Token(BaseModel):
 
 class DeleteRefresh(BaseModel):
     email: EmailStr
+
+
+class DeleteResponse(BaseModel):
+    message: str

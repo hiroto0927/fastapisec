@@ -63,4 +63,4 @@ def delete_refresh_token_by_email(req: DeleteRefresh, db: Session):
     valid_refresh.delete()
     db.commit()
 
-    return
+    return {"message": "Refresh token deleted"}
