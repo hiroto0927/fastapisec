@@ -16,6 +16,7 @@ def test_create_user(mocker):
         "/api/users/", json={"password": "password", "email": "user@example.com", "name": "test_user"}
     )
     assert response.status_code == 200
+    assert response.json() == {"id": 1, "email": "user@example.com", "name": "test_user"}
 
 
 def test_create_user_exeptions(mocker):
@@ -24,6 +25,7 @@ def test_create_user_exeptions(mocker):
         "/api/users/", json={"password": "password", "email": "user@example.com", "name": "test_user"}
     )
     assert response.status_code == 409
+    assert response.json() == {"detail": "user@example.com is already exist"}
 
 
 def test_not_authenticated_get_user(mocker):
@@ -33,6 +35,7 @@ def test_not_authenticated_get_user(mocker):
     )
     response = client.get("/api/users/1")
     assert response.status_code == 403
+    assert response.json() == {"detail": "Not authenticated"}
 
 
 def mock_get_current_user():
@@ -54,24 +57,4 @@ def test_get_user_exeptions(mocker):
     mocker.patch("src.cruds.users.get_one_member", side_effect=[NotUserExistException])
     response = client.get("/api/users/100")
     assert response.status_code == 404
-
-
-def test_create_user(mocker):
-    mocker.patch(
-        "src.cruds.users.create_user",
-        return_value={
-            "id": 1,
-            "name": "test_user",
-            "email": "user@example.com",
-            "salt": "salt",
-            "hashedpass": "hashedpass",
-        },
-    )
-    response = client.post("/api/users/", json={"name": "string", "password": "stringst", "email": "user@example.com"})
-    assert response.status_code == 200
-
-
-def test_create_user_exeptions(mocker):
-    mocker.patch("src.cruds.users.create_user", side_effect=[AlreadyExistUserError])
-    response = client.post("/api/users/", json={"name": "string", "password": "stringst", "email": "user@example.com"})
-    assert response.status_code == 409
+    assert response.json() == {"detail": "Not Found id = 100"}

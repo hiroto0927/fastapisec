@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from src.db.database import get_db
 from src.schemas.auth import Create
 from fastapi import HTTPException
-from src.schemas.jwt import PublicKey, Refresh as RefreshSchema, Token, DeleteRefresh
+from src.schemas.jwt import PublicKey, Refresh as RefreshSchema, Token, DeleteRefresh, DeleteResponse
 import os
 from jwt import ExpiredSignatureError, InvalidTokenError
 from src.utils.exeption import PasswordNotMatchError, NotUserExistException
@@ -40,12 +40,12 @@ def refresh_publish(req: RefreshSchema, db: Session = Depends(get_db)):
     try:
         return auth.token_republish_by_refresh_token(req, db)
     except ExpiredSignatureError:
-        raise HTTPException(401, "Invalid credentials")
+        raise HTTPException(401, "Signature has expired")
     except InvalidTokenError:
         raise HTTPException(401, "Invalid credentials")
 
 
-@router.delete("/refresh-token")
+@router.delete("/refresh-token", response_model=DeleteResponse)
 def delete_refresh_token(req: DeleteRefresh, db: Session = Depends(get_db)):
     try:
         return auth.delete_refresh_token_by_email(req, db)
