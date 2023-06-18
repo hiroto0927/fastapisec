@@ -1,9 +1,17 @@
-FROM python:3.10-alpine
+FROM mcr.microsoft.com/devcontainers/python:3.10-bullseye
 
-RUN apk update
-RUN apk add --no-cache gcc musl-dev \
-    libpq-dev build-base postgresql-dev
-RUN apk add --no-cache python3-dev libffi-dev openssl-dev
+RUN apt update
+
+RUN apt-get install -y --no-install-recommends \
+    gcc \
+    musl-dev \
+    libpq-dev \
+    build-essential \
+    postgresql-server-dev-all \
+    python3-dev \
+    libffi-dev \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./requirements.txt /app/requirements.txt
 
