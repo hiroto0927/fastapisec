@@ -11,17 +11,9 @@ RUN apt-get install -y --no-install-recommends \
     python3-dev \
     libffi-dev \
     openssl \
+    docker \
+    docker-compose \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./requirements.txt /app/requirements.txt
-
-WORKDIR /app
-
+RUN git config --global --add safe.directory /workspaces
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-COPY . /app
-
-EXPOSE 8000
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

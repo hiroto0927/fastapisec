@@ -3,21 +3,35 @@ version: "3.8"
 services:
   db:
     build:
-      context: .
-      dockerfile: ./db/Dockerfile
+      context: ./db
+      dockerfile: Dockerfile
+    hostname: postgres_db
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      POSTGRES_DB: database    
     volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-  db_test:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - default
+  
+  backend:
     build:
-      context: .
-      dockerfile: ./db/Dockerfile
-    ports:
-      - 5430:5432
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      context: ./.devcontainer
+      dockerfile: Dockerfile
+    hostname: backend
+    volumes:
+        - .:/workspace/ 
+    tty: true
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    networks:
+      - default
+
+volumes:
+  db-data:
+        
+networks:
+  default:
+    name: postgres-network
