@@ -31,6 +31,7 @@ pycparser==2.21
 pydantic==1.10.8
 PyJWT==2.7.0
 pytest==7.3.1
+pytest-mock==3.10.0
 python-dotenv==1.0.0
 python-multipart==0.0.6
 PyYAML==6.0

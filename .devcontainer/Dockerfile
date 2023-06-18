@@ -16,3 +16,4 @@ RUN apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git config --global --add safe.directory /workspaces
+RUN pip install --upgrade pip

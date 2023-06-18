@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 HOST = os.environ.get("HOST")
 USERS = os.environ.get("USERS")
 PASS = os.environ.get("PASS")
