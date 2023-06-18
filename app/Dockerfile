@@ -3,7 +3,7 @@ FROM python:3.10-alpine
 RUN apk update
 RUN apk add --no-cache gcc musl-dev \
     libpq-dev build-base postgresql-dev
-RUN apk add --no-cache python3-dev libffi-dev openssl-dev cargo pkgconfig
+RUN apk add --no-cache python3-dev libffi-dev openssl-dev
 
 COPY ./requirements.txt /app/requirements.txt
 
