@@ -11,7 +11,7 @@ from src.schemas.jwt import DeleteRefresh
 
 
 def create_token_by_email(req: Create, db: Session):
-    user = db.query(User).filter(User.email == req.email).first()
+    user: User = db.query(User).filter(User.email == req.email).first()
 
     if user is None:
         raise NotUserExistException()
