@@ -15,6 +15,7 @@ class PublicKey(BaseModel):
     kty: str
     n: str
     e: str
+    kid: str
 
     class Config:
         orm_mode = True

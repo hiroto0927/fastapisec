@@ -40,7 +40,7 @@ def token_republish_by_refresh_token(req: RefreshSchema, db: Session):
     if valid_refresh.filter(Refresh.kid == decoded.kid).first() is None:
         raise InvalidTokenError()
 
-    user = db.query(User).filter(User.id == decoded.sub).first()
+    user: User = db.query(User).filter(User.id == decoded.sub).first()
 
     access_token = jwt.create_access_token(user.email)
 
