@@ -8,6 +8,9 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from src.models.refresh import Refresh
 from src.libs import pwd
+from jwt.algorithms import RSAAlgorithm
+from jwcrypto import jwk
+
 
 load_dotenv()
 
@@ -76,3 +79,9 @@ def decoded_refresh_token(encoded_refresh: str):
     )
 
     return response
+
+
+def create_public_key_to_jwk():
+    key = jwk.JWK.from_pem(PUBLIC_KEY.encode("utf-8"))
+    print(jwk.JWK.export_to_pem(key).decode())
+    return key

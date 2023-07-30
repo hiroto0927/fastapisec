@@ -6,3 +6,6 @@ private-key.pem
 public-key.pem
 venv
 
+jwt-key
+jwt-key.pub
+```

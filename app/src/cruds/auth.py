@@ -11,7 +11,7 @@ from src.schemas.jwt import DeleteRefresh
 
 
 def create_token_by_email(req: Create, db: Session):
-    user = db.query(User).filter(User.email == req.email).first()
+    user: User = db.query(User).filter(User.email == req.email).first()
 
     if user is None:
         raise NotUserExistException()
@@ -40,7 +40,7 @@ def token_republish_by_refresh_token(req: RefreshSchema, db: Session):
     if valid_refresh.filter(Refresh.kid == decoded.kid).first() is None:
         raise InvalidTokenError()
 
-    user = db.query(User).filter(User.id == decoded.sub).first()
+    user: User = db.query(User).filter(User.id == decoded.sub).first()
 
     access_token = jwt.create_access_token(user.email)
 

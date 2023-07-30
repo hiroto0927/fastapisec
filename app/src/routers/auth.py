@@ -9,13 +9,9 @@ from jwt import ExpiredSignatureError, InvalidTokenError
 from src.utils.exeption import PasswordNotMatchError, NotUserExistException
 from src.cruds import auth
 from dotenv import load_dotenv
+from src.libs import jwt
 
 load_dotenv()
-
-kty = os.environ.get("kty")
-n = os.environ.get("n")
-e = os.environ.get("e")
-
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -32,7 +28,8 @@ def create_token(req: Create, db: Session = Depends(get_db)):
 
 @router.get("/public-key", response_model=PublicKey)
 def publish_public_key():
-    return {"kty": kty, "n": n, "e": e}
+    key = jwt.create_public_key_to_jwk()
+    return key
 
 
 @router.post("/refresh-token", response_model=Token)
