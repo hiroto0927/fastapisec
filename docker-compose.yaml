@@ -23,15 +23,19 @@ services:
       dockerfile: Dockerfile
     hostname: backend
     volumes:
-        - .:/workspace/ 
+        - .:/workspace/
+        - ~/.ssh:/home/vscode/.ssh:ro
+        - ~/.aws:/home/vscode/.aws:ro 
     tty: true
     command: /bin/sh -c "while sleep 1000; do :; done"
     networks:
       - default
 
+
 volumes:
   db-data:
-        
+  
+
 networks:
   default:
     name: postgres-network
